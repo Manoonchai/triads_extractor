@@ -1,5 +1,12 @@
 # TriadsExtractor
 
+## Running
+
+```shell
+mix deps.get
+mix run
+```
+
 ## Getting Data
 
 Scrape using [Twint](https://github.com/twintproject/twint), but since it needs keyword I have to split it to multiple processes.
@@ -33,9 +40,7 @@ Scrape using [Twint](https://github.com/twintproject/twint), but since it needs 
    cat tweet-*.csv | sort -r -u > tweet-combined-uniq.csv
    ```
 
-## Running
+## TODOs
 
-```shell
-mix deps.get
-mix run
-```
+- [ ] Cleanup gibberish data
+- [ ] Output as triads (json/csv) with frequencies

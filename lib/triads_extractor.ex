@@ -3,7 +3,7 @@ defmodule TriadsExtractor do
   Documentation for `TriadsExtractor`.
   """
 
-  def run(input \\ "in.csv", output \\ "out.json") do
+  def run(input \\ "in.csv", output \\ "out.json", trim \\ false) do
     File.write!(output, "{\n")
 
     output_file = File.stream!(output, [:append])
@@ -24,6 +24,15 @@ defmodule TriadsExtractor do
         Map.merge(line_to_triads(str), acc, fn _k, a, b -> a + b end)
       end)
       |> Enum.sort(fn {_k1, v1}, {_k2, v2} -> v1 > v2 end)
+
+    triads = if trim do
+      {_, maxv} = List.first(triads)
+      threshold = 0.001 * maxv
+
+      triads |> Enum.reject(fn {_, v} -> v < threshold end)
+    else
+      triads
+    end
 
     triads
     |> Stream.map(fn {k, v} -> "  \"#{k}\": #{v}" end)

@@ -3,23 +3,35 @@ defmodule TriadsExtractor do
   Documentation for `TriadsExtractor`.
   """
 
-  def run(input, output) do
-    output_file = File.stream!(output || "out.txt")
+  def run(input \\ "in.csv", output \\ "out.json") do
+    File.write!(output, "{\n")
 
-    File.stream!(input || "in.csv")
-    |> CSV.decode(headers: true, separator: ?\t)
-    |> Stream.map(fn {:ok, row} -> row["tweet"] end)
-    |> Stream.map(fn str -> cleanup(str) end)
-    |> Stream.filter(fn str -> String.length(str) >= 3 end)
-    |> Stream.dedup()
-    |> Stream.with_index(1)
-    |> Stream.each(fn {str, idx} ->
-      IO.puts("#{idx} | #{str}")
-    end)
-    |> Stream.map(fn {str, _} -> str end)
-    |> Stream.intersperse("\n")
+    output_file = File.stream!(output, [:append])
+
+    triads =
+      File.stream!(input)
+      |> CSV.decode(headers: true, separator: ?\t)
+      |> Stream.map(fn {:ok, row} -> row["tweet"] end)
+      |> Stream.map(fn str -> cleanup(str) end)
+      |> Stream.filter(fn str -> String.length(str) >= 3 end)
+      |> Stream.dedup()
+      |> Stream.with_index(1)
+      # |> Stream.take(5000)
+      |> Stream.each(fn {str, idx} ->
+        IO.puts("#{idx} | #{str}")
+      end)
+      |> Enum.reduce(%{}, fn {str, _}, acc ->
+        Map.merge(line_to_triads(str), acc, fn _k, a, b -> a + b end)
+      end)
+      |> Enum.sort(fn {_k1, v1}, {_k2, v2} -> v1 > v2 end)
+
+    triads
+    |> Stream.map(fn {k, v} -> "  \"#{k}\": #{v}" end)
+    |> Stream.intersperse(",\n")
     |> Stream.into(output_file)
     |> Stream.run()
+
+    File.write!(output, "\n}", [:append])
   end
 
   def cleanup(str) do

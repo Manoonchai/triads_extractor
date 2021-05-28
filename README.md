@@ -20,18 +20,15 @@ Scrape using [Twint](https://github.com/twintproject/twint), but since it needs 
 2. Scrape Thai Tweets, as much as you want
 
    ```shell
-   twint -s "น" --csv -o tweet-nor.csv
-   twint -s "า" --csv -o tweet-ar.csv
-   twint -s "ร" --csv -o tweet-ror.csv
-   twint -s "อ" --csv -o tweet-or.csv
-   twint -s "่" --csv -o tweet-aek.csv
-   twint -s "เ" --csv -o tweet-ae.csv
-   twint -s "ว" --csv -o tweet-wor.csv
-   twint -s "ง" --csv -o tweet-ngor.csv
-   twint -s "ม" --csv -o tweet-mor.csv
-   twint -s "ย" --csv -o tweet-yor.csv
-   twint -s "ี" --csv -o tweet-ee.csv
+   # Scrape by geolocation
    twint -g="13.736717,100.523186,500km" --csv -o tweet-geo-thailand.csv --lang th
+
+   # Scrape until date
+   export DATE=2020-10-02 ; twint -g="13.736717,100.523186,500km" --csv -o tweet-geo-thailand-$DATE.csv --lang th --until $DATE
+   export DATE=2021-01-01 ; twint -g="13.736717,100.523186,500km" --csv -o tweet-geo-thailand-$DATE.csv --lang th --until $DATE
+
+   # Scrape @sugree tweets!
+   twint -u=sugree --csv -o tweet-sugree.csv
    ```
 
 3. Combine & remove duplicates

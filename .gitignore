@@ -24,3 +24,6 @@ triads_extractor-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Executable
+/triads_extractor

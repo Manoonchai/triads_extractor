@@ -3,8 +3,12 @@
 ## Running
 
 ```shell
+# Build
 mix deps.get
-mix run
+mix escript.build
+
+# Run
+./triads_extractor -i path/to/input.csv -o path/to/output.txt
 ```
 
 ## Getting Data
